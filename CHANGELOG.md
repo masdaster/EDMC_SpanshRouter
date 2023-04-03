@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.1.0
+
+- Update UI to save some space and look a little bit more appealing.
+- Fix loading of last imported route.
+
 ## 4.0.0
 
 - First release based on norohind's version supporting EDMC 5 and newer.
