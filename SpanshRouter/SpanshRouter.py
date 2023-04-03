@@ -41,7 +41,7 @@ class SpanshRouter():
         self.route = []
         self.next_wp_label = "Next waypoint: "
         self.jumpcountlbl_txt = "Estimated jumps left: "
-        self.bodieslbl_txt = "Bodies to scan at: "
+        self.bodieslbl_txt = "Bodies to scan at "
         self.fleetstocklbl_txt = "Time to restock Tritium"
         self.refuellbl_txt = "Time to scoop some fuel"
         self.bodies = ""
@@ -66,12 +66,16 @@ class SpanshRouter():
     def init_gui(self, parent):
         self.parent = parent
         self.frame = tk.Frame(parent, borderwidth=2)
-        self.frame.grid(sticky=tk.NSEW, columnspan=2)
+        self.frame.grid(sticky=tk.NSEW, columnspan=4)
+        self.frame.columnconfigure(0, weight=0)
+        self.frame.columnconfigure(1, weight=1)
+        self.frame.columnconfigure(2, weight=1)
+        self.frame.columnconfigure(3, weight=0)
 
         # Route info
-        self.waypoint_prev_btn = tk.Button(self.frame, text="^", command=self.goto_prev_waypoint)
+        self.waypoint_prev_btn = tk.Button(self.frame, text="<", command=self.goto_prev_waypoint)
         self.waypoint_btn = tk.Button(self.frame, text=self.next_wp_label + '\n' + self.next_stop, command=self.copy_waypoint)
-        self.waypoint_next_btn = tk.Button(self.frame, text="v", command=self.goto_next_waypoint)
+        self.waypoint_next_btn = tk.Button(self.frame, text=">", command=self.goto_next_waypoint)
         self.jumpcounttxt_lbl = tk.Label(self.frame, text=self.jumpcountlbl_txt + str(self.jumps_left))
         self.bodies_lbl = tk.Label(self.frame, justify=LEFT, text=self.bodieslbl_txt + self.bodies)
         self.fleetrestock_lbl = tk.Label(self.frame, justify=LEFT, text=self.fleetstocklbl_txt)
@@ -79,8 +83,8 @@ class SpanshRouter():
         self.error_lbl = tk.Label(self.frame, textvariable=self.error_txt)
 
         # Plotting GUI
-        self.source_ac = AutoCompleter(self.frame, "Source System", width=30)
-        self.dest_ac = AutoCompleter(self.frame, "Destination System", width=30)
+        self.source_ac = AutoCompleter(self.frame, "Source System")
+        self.dest_ac = AutoCompleter(self.frame, "Destination System")
         self.range_entry = PlaceHolder(self.frame, "Range (LY)", width=10)
         self.efficiency_slider = tk.Scale(self.frame, from_=1, to=100, orient=tk.HORIZONTAL, label="Efficiency (%)")
         self.efficiency_slider.set(60)
@@ -89,41 +93,39 @@ class SpanshRouter():
         self.cancel_plot = tk.Button(self.frame, text="Cancel", command=lambda: self.show_plot_gui(False))
 
         self.csv_route_btn = tk.Button(self.frame, text="Import file", command=self.plot_file)
-        self.export_route_btn = tk.Button(self.frame, text="Export for TCE", command=self.export_route)
+        self.export_route_btn = tk.Button(self.frame, text="Export (TCE)", command=self.export_route)
         self.clear_route_btn = tk.Button(self.frame, text="Clear route", command=self.clear_route)
 
         row = 0
-        self.waypoint_prev_btn.grid(row=row, columnspan=2)
+        self.waypoint_prev_btn.grid(row=row, column=0, sticky=tk.NSEW)
+        self.waypoint_btn.grid(row=row, column=1, columnspan=2, sticky=tk.NSEW)
+        self.waypoint_next_btn.grid(row=row, column=3, sticky=tk.NSEW)
         row += 1
-        self.waypoint_btn.grid(row=row, columnspan=2)
+        self.bodies_lbl.grid(row=row, columnspan=4, sticky=tk.W)
         row += 1
-        self.waypoint_next_btn.grid(row=row, columnspan=2)
+        self.fleetrestock_lbl.grid(row=row, columnspan=4, sticky=tk.W)
         row += 1
-        self.bodies_lbl.grid(row=row, columnspan=2, sticky=tk.W)
+        self.refuel_lbl.grid(row=row, columnspan=4, sticky=tk.W)
         row += 1
-        self.fleetrestock_lbl.grid(row=row, columnspan=2, sticky=tk.W)
-        row += 1
-        self.refuel_lbl.grid(row=row,columnspan=2, sticky=tk.W)
-        row += 1
-        self.source_ac.grid(row=row,columnspan=2, pady=(10,0)) # The AutoCompleter takes two rows to show the list when needed, so we skip one
+        self.source_ac.grid(row=row, columnspan=4, pady=(10,0), sticky=tk.EW) # The AutoCompleter takes two rows to show the list when needed, so we skip one
         row += 2
-        self.dest_ac.grid(row=row,columnspan=2, pady=(10,0))
+        self.dest_ac.grid(row=row, columnspan=4, pady=(10,0), sticky=tk.EW)
         row += 2
-        self.range_entry.grid(row=row, pady=10, sticky=tk.W)
+        self.range_entry.grid(row=row, columnspan=2, pady=(10,0), sticky=tk.W)
         row += 1
-        self.efficiency_slider.grid(row=row, pady=10, columnspan=2, sticky=tk.EW)
+        self.efficiency_slider.grid(row=row, columnspan=4, pady=10, sticky=tk.EW)
         row += 1
-        self.csv_route_btn.grid(row=row, pady=10, padx=0)
-        self.plot_route_btn.grid(row=row, pady=10, padx=0)
-        self.plot_gui_btn.grid(row=row, column=1, pady=10, padx=5, sticky=tk.W)
-        self.cancel_plot.grid(row=row, column=1, pady=10, padx=5, sticky=tk.E)
+        self.csv_route_btn.grid(row=row, columnspan=2, pady=10, sticky=tk.EW)
+        self.plot_route_btn.grid(row=row, columnspan=2, pady=10, sticky=tk.EW)
+        self.plot_gui_btn.grid(row=row, column=2, columnspan=2, pady=10, sticky=tk.EW)
+        self.cancel_plot.grid(row=row, column=2, columnspan=2, pady=10, sticky=tk.EW)
         row += 1
-        self.export_route_btn.grid(row=row, pady=10, padx=0)
-        self.clear_route_btn.grid(row=row, column=1, pady=10, padx=5, sticky=tk.W)
+        self.export_route_btn.grid(row=row, columnspan=2, pady=10, sticky=tk.EW)
+        self.clear_route_btn.grid(row=row, column=2, columnspan=2, pady=10, sticky=tk.EW)
         row += 1
-        self.jumpcounttxt_lbl.grid(row=row, pady=5, sticky=tk.W)
+        self.jumpcounttxt_lbl.grid(row=row, columnspan=4, pady=5, sticky=tk.W)
         row += 1
-        self.error_lbl.grid(row=row, columnspan=2)
+        self.error_lbl.grid(row=row, columnspan=4)
         self.error_lbl.grid_remove()
         row += 1
 
@@ -803,7 +805,8 @@ class SpanshRouter():
         if len(waterbodies) > 0: bodysubtypeandname += f"\n   Water: " + ', '.join(waterbodies)
         if len(unknownbodies) > 0: bodysubtypeandname += f"\n   Unknown: " + ', '.join(unknownbodies)
 
-        self.bodies = f"\n{lastsystem}:{bodysubtypeandname}"
+        new_line = '\n'
+        self.bodies = f"{new_line if len(lastsystem) > 22 else ''}{lastsystem}:{bodysubtypeandname}"
 
 
     def check_range(self, name, index, mode):
