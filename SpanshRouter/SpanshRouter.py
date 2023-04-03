@@ -464,7 +464,7 @@ class SpanshRouter():
                 self.roadtoriches = True
 
                 for row in route_reader:
-                    if row not in (None, "", []):
+                    if row not in (None, "", []) and row[self.bodyname_header] is not None:
                         # Convert string representations of lists to actual Lists
                         bodynames = ast.literal_eval(row[self.bodyname_header])
                         bodysubtypes = ast.literal_eval(row[self.bodysubtype_header])
