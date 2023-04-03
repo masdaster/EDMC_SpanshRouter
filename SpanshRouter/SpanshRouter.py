@@ -383,7 +383,7 @@ class SpanshRouter():
         self.save_offset()
 
     def goto_changelog_page(self):
-        changelog_url = 'https://github.com/CMDR-Kiel42/EDMC_SpanshRouter/blob/master/CHANGELOG.md#'
+        changelog_url = 'https://github.com/masdaster/EDMC_SpanshRouter/blob/master/CHANGELOG.md#'
         changelog_url += self.spansh_updater.version.replace('.', '')
         webbrowser.open(changelog_url)
 
@@ -833,9 +833,8 @@ class SpanshRouter():
                 logger.warning(''.join('!! ' + line for line in lines))
 
     def check_for_update(self):
-        return  # Autoupdates is disabled
         self.cleanup_old_version()
-        version_url = "https://raw.githubusercontent.com/CMDR-Kiel42/EDMC_SpanshRouter/master/version.json"
+        version_url = "https://raw.githubusercontent.com/masdaster/EDMC_SpanshRouter/master/version.json"
         try:
             response = requests.get(version_url, timeout=2)
             if response.status_code == 200:
