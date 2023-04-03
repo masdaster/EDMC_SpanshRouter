@@ -133,34 +133,16 @@ class SpanshRouter():
         self.range_entry.var.trace('w', self.check_range)
 
         self.show_plot_gui(False)
-
-        if not self.route.__len__() > 0:
-            self.waypoint_prev_btn.grid_remove()
-            self.waypoint_btn.grid_remove()
-            self.waypoint_next_btn.grid_remove()
-            self.jumpcounttxt_lbl.grid_remove()
-            self.bodies_lbl.grid_remove()
-            self.fleetrestock_lbl.grid_remove()
-            self.export_route_btn.grid_remove()
-            self.clear_route_btn.grid_remove()
-
         self.update_gui()
 
         return self.frame
 
     def show_plot_gui(self, show=True):
         if show:
-            self.waypoint_prev_btn.grid_remove()
-            self.waypoint_btn.grid_remove()
-            self.waypoint_next_btn.grid_remove()
-            self.jumpcounttxt_lbl.grid_remove()
-            self.bodies_lbl.grid_remove()
-            self.fleetrestock_lbl.grid_remove()
-            self.export_route_btn.grid_remove()
-            self.clear_route_btn.grid_remove()
-
+            self.show_route_gui(False)
             self.plot_gui_btn.grid_remove()
             self.csv_route_btn.grid_remove()
+            
             self.source_ac.grid()
             # Prefill the "Source" entry with the current system
             self.source_ac.set_text(monitor.state['SystemName'] if monitor.state['SystemName'] is not None else "Source System", monitor.state['SystemName'] is None)
@@ -181,18 +163,15 @@ class SpanshRouter():
             self.dest_ac.grid_remove()
             self.range_entry.grid_remove()
             self.efficiency_slider.grid_remove()
-            self.plot_gui_btn.grid_remove()
             self.plot_route_btn.grid_remove()
             self.cancel_plot.grid_remove()
-            self.plot_gui_btn.grid()
-            self.csv_route_btn.grid()
 
     def set_source_ac(self, text):
         self.source_ac.delete(0, tk.END)
         self.source_ac.insert(0, text)
         self.source_ac.set_default_style()
 
-    def show_route_gui(self, show):
+    def show_route_gui(self, show=True):
         self.hide_error()
         if not show or not self.route.__len__() > 0:
             self.waypoint_prev_btn.grid_remove()
@@ -202,11 +181,11 @@ class SpanshRouter():
             self.bodies_lbl.grid_remove()
             self.fleetrestock_lbl.grid_remove()
             self.refuel_lbl.grid_remove()
-            self.plot_gui_btn.grid()
-            self.csv_route_btn.grid()
             self.export_route_btn.grid_remove()
             self.clear_route_btn.grid_remove()
+
         else:
+            self.show_plot_gui(False)
             self.waypoint_btn["text"] = self.next_wp_label + '\n' + self.next_stop
             if self.jumps_left > 0:
                 self.jumpcounttxt_lbl["text"] = self.jumpcountlbl_txt + str(self.jumps_left)
@@ -249,13 +228,18 @@ class SpanshRouter():
                 else:
                     self.waypoint_next_btn.config(state=tk.NORMAL)
 
-            self.plot_gui_btn.grid_remove()
-            self.csv_route_btn.grid_remove()
             self.export_route_btn.grid()
             self.clear_route_btn.grid()
 
     def update_gui(self):
-        self.show_route_gui(True)
+        if self.route.__len__() > 0:
+            self.plot_gui_btn.grid_remove()
+            self.csv_route_btn.grid_remove()
+            self.show_route_gui()
+        else:
+            self.show_route_gui(False)
+            self.plot_gui_btn.grid()
+            self.csv_route_btn.grid()
 
     def show_error(self, error):
         self.error_txt.set(error)
