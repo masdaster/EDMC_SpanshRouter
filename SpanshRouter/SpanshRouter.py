@@ -170,8 +170,6 @@ class SpanshRouter():
             self.plot_route_btn.grid()
             self.cancel_plot.grid()
 
-            self.show_route_gui(False)
-
         else:
             if len(self.source_ac.var.get()) == 0:
                 self.source_ac.put_placeholder()
@@ -188,7 +186,6 @@ class SpanshRouter():
             self.cancel_plot.grid_remove()
             self.plot_gui_btn.grid()
             self.csv_route_btn.grid()
-            self.show_route_gui(True)
 
     def set_source_ac(self, text):
         self.source_ac.delete(0, tk.END)
@@ -205,6 +202,8 @@ class SpanshRouter():
             self.bodies_lbl.grid_remove()
             self.fleetrestock_lbl.grid_remove()
             self.refuel_lbl.grid_remove()
+            self.plot_gui_btn.grid()
+            self.csv_route_btn.grid()
             self.export_route_btn.grid_remove()
             self.clear_route_btn.grid_remove()
         else:
@@ -250,6 +249,8 @@ class SpanshRouter():
                 else:
                     self.waypoint_next_btn.config(state=tk.NORMAL)
 
+            self.plot_gui_btn.grid_remove()
+            self.csv_route_btn.grid_remove()
             self.export_route_btn.grid()
             self.clear_route_btn.grid()
 
