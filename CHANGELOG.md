@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 4.0.0
+
+- First release based on norohind's version supporting EDMC 5 and newer.
+- Update url and changelog url are modified to point to this repo for further updates.
+
 ## 3.1.0
 
 - BE ADVISED: This version only works for EDMC 4.0.0.0 and above. Do not install if you're not currently running the latest EDMC version.
